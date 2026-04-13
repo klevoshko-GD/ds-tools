@@ -1,0 +1,396 @@
+{
+  "guidelines": [
+    {
+      "token": "color.base.background",
+      "category": "base",
+      "description": "Page and panel background",
+      "usage": "Use as the default surface behind all content. Light: white (#FFFFFF). Dark: near-black (#202020).",
+      "lightValue": "#FFFFFF",
+      "darkValue": "#202020"
+    },
+    {
+      "token": "color.base.foreground",
+      "category": "base",
+      "description": "Primary text color on the background",
+      "usage": "Use for body text, headings, and icon fills rendered directly on the background surface.",
+      "lightValue": "#1F1F21",
+      "darkValue": "#EEEEF0"
+    },
+    {
+      "token": "color.base.card",
+      "category": "base",
+      "description": "Card component background",
+      "usage": "Use as the background for Card, Dialog, Sheet, and similar elevated surfaces.",
+      "lightValue": "#FFFFFF",
+      "darkValue": "#262629"
+    },
+    {
+      "token": "color.base.card-foreground",
+      "category": "base",
+      "description": "Text and icons within cards",
+      "usage": "Use for all text and icon content rendered inside Card components.",
+      "lightValue": "#1F1F21",
+      "darkValue": "#F7F8F8"
+    },
+    {
+      "token": "color.base.popover",
+      "category": "base",
+      "description": "Background for dropdown menus and popovers",
+      "usage": "Use as the background for Popover, DropdownMenu, Tooltip, and Select content surfaces.",
+      "lightValue": "#FFFFFF",
+      "darkValue": "#262626"
+    },
+    {
+      "token": "color.base.popover-foreground",
+      "category": "base",
+      "description": "Text and icons within popovers",
+      "usage": "Use for all text and icon content inside Popover and DropdownMenu components.",
+      "lightValue": "#1F1F21",
+      "darkValue": "#F7F8F8"
+    },
+    {
+      "token": "color.base.primary",
+      "category": "base",
+      "description": "Brand color for primary actions (buttons, highlights)",
+      "usage": "Use for primary Button backgrounds, active tab indicators, and key interactive highlights. This is the main brand action color.",
+      "lightValue": "#0069B4",
+      "darkValue": "#5EACE0"
+    },
+    {
+      "token": "color.base.primary-foreground",
+      "category": "base",
+      "description": "Text and icons on primary-colored elements",
+      "usage": "Use for text and icon content rendered on top of primary-colored surfaces (e.g., label inside a primary button).",
+      "lightValue": "#F7F8F8",
+      "darkValue": "#F7F8F8"
+    },
+    {
+      "token": "color.base.secondary",
+      "category": "base",
+      "description": "Less prominent action color",
+      "usage": "Use for secondary Button backgrounds and less-prominent interactive surfaces.",
+      "lightValue": "#F5F5F5",
+      "darkValue": "#41434B"
+    },
+    {
+      "token": "color.base.secondary-foreground",
+      "category": "base",
+      "description": "Text and icons on secondary-colored elements",
+      "usage": "Use for text and icons rendered on top of secondary surfaces.",
+      "lightValue": "#41434B",
+      "darkValue": "#D9DADE"
+    },
+    {
+      "token": "color.base.muted",
+      "category": "base",
+      "description": "Subdued background for less important elements",
+      "usage": "Use for muted badges, skeleton loaders, disabled input backgrounds, and code block surfaces.",
+      "lightValue": "#F7F8F8",
+      "darkValue": "#2C2D30"
+    },
+    {
+      "token": "color.base.muted-foreground",
+      "category": "base",
+      "description": "De-emphasized text (captions, labels)",
+      "usage": "Use for placeholder text, captions, helper text, and secondary labels that should recede visually.",
+      "lightValue": "#91959F",
+      "darkValue": "#B8BAC1"
+    },
+    {
+      "token": "color.base.accent",
+      "category": "base",
+      "description": "Highlight color for active or focused elements",
+      "usage": "Use for hovered or active row/item backgrounds in lists, menus, and navigation.",
+      "lightValue": "#EEEEF0",
+      "darkValue": "#41434B"
+    },
+    {
+      "token": "color.base.accent-foreground",
+      "category": "base",
+      "description": "Text and icons on accent-colored elements",
+      "usage": "Use for text and icons rendered on accent-background surfaces.",
+      "lightValue": "#91959F",
+      "darkValue": "#B8BAC1"
+    },
+    {
+      "token": "color.base.destructive",
+      "category": "base",
+      "description": "Error and deletion action color",
+      "usage": "Use for error states, delete confirmation dialogs, and destructive action buttons.",
+      "lightValue": "#DC2626",
+      "darkValue": "#F87171"
+    },
+    {
+      "token": "color.base.destructive-foreground",
+      "category": "base",
+      "description": "Text and icons on destructive-colored elements",
+      "usage": "Use for text and icons rendered on destructive backgrounds.",
+      "lightValue": "#FEF2F2",
+      "darkValue": "#FEF2F2"
+    },
+    {
+      "token": "color.base.border",
+      "category": "base",
+      "description": "Default border color",
+      "usage": "Use for dividers, card outlines, table row separators, and general-purpose borders.",
+      "lightValue": "#D9DADE",
+      "darkValue": "#FFFFFF26"
+    },
+    {
+      "token": "color.base.input",
+      "category": "base",
+      "description": "Form inputs and button borders",
+      "usage": "Use for the border of text inputs, select fields, textareas, and icon-button outlines in their default (unfocused) state.",
+      "lightValue": "#D9DADE",
+      "darkValue": "#FFFFFF26"
+    },
+    {
+      "token": "color.base.ring",
+      "category": "base",
+      "description": "Focus indicator color",
+      "usage": "Use as the outline or box-shadow ring rendered around focused interactive elements for accessibility.",
+      "lightValue": "#91959F",
+      "darkValue": "#737373"
+    },
+    {
+      "token": "color.base.ring-offset",
+      "category": "base",
+      "description": "The color of the space between a focused element and its ring",
+      "usage": "Use as the background-color beneath the focus ring offset, so the ring appears visually separated from the focused element.",
+      "lightValue": "#FFFFFF",
+      "darkValue": "#202020"
+    },
+    {
+      "token": "color.base.sidebar",
+      "category": "sidebar",
+      "description": "Sidebar background",
+      "usage": "Use as the background of the application sidebar panel.",
+      "lightValue": "#F7F8F8",
+      "darkValue": "#262629"
+    },
+    {
+      "token": "color.base.sidebar-foreground",
+      "category": "sidebar",
+      "description": "Text and icons within sidebar",
+      "usage": "Use for all text and icon content inside the sidebar.",
+      "lightValue": "#1F1F21",
+      "darkValue": "#F7F8F8"
+    },
+    {
+      "token": "color.base.sidebar-primary",
+      "category": "sidebar",
+      "description": "Primary actions within sidebar",
+      "usage": "Use for active navigation items and primary interactive elements within the sidebar.",
+      "lightValue": "#262629",
+      "darkValue": "#005E9F"
+    },
+    {
+      "token": "color.base.sidebar-primary-foreground",
+      "category": "sidebar",
+      "description": "Text on sidebar primary elements",
+      "usage": "Use for text and icons on top of sidebar-primary-colored backgrounds.",
+      "lightValue": "#F7F8F8",
+      "darkValue": "#F7F8F8"
+    },
+    {
+      "token": "color.base.sidebar-accent",
+      "category": "sidebar",
+      "description": "Highlighted elements within sidebar",
+      "usage": "Use for hovered or focused navigation item backgrounds within the sidebar.",
+      "lightValue": "#EEEEF0",
+      "darkValue": "#41434B"
+    },
+    {
+      "token": "color.base.sidebar-accent-foreground",
+      "category": "sidebar",
+      "description": "Text on sidebar accent elements",
+      "usage": "Use for text and icons on top of sidebar-accent-colored backgrounds.",
+      "lightValue": "#262629",
+      "darkValue": "#F7F8F8"
+    },
+    {
+      "token": "color.base.sidebar-border",
+      "category": "sidebar",
+      "description": "Sidebar divider lines or borders",
+      "usage": "Use for horizontal or vertical separators within the sidebar.",
+      "lightValue": "#D9DADE",
+      "darkValue": "#FFFFFF1A"
+    },
+    {
+      "token": "color.base.sidebar-ring",
+      "category": "sidebar",
+      "description": "Focus indicators within sidebar",
+      "usage": "Use for focus rings on interactive elements inside the sidebar.",
+      "lightValue": "#91959F",
+      "darkValue": "#5D616C"
+    },
+    {
+      "token": "color.base.chart-1",
+      "category": "charts",
+      "description": "Data visualization colors \u2014 series 1",
+      "usage": "Use for the first data series in charts, graphs, and data visualizations.",
+      "lightValue": "#EA580C",
+      "darkValue": "#1D4ED8"
+    },
+    {
+      "token": "color.base.chart-2",
+      "category": "charts",
+      "description": "Data visualization colors \u2014 series 2",
+      "usage": "Use for the second data series in charts and graphs.",
+      "lightValue": "#0D9488",
+      "darkValue": "#10B981"
+    },
+    {
+      "token": "color.base.chart-3",
+      "category": "charts",
+      "description": "Data visualization colors \u2014 series 3",
+      "usage": "Use for the third data series in charts and graphs.",
+      "lightValue": "#164E63",
+      "darkValue": "#F59E0B"
+    },
+    {
+      "token": "color.base.chart-4",
+      "category": "charts",
+      "description": "Data visualization colors \u2014 series 4",
+      "usage": "Use for the fourth data series in charts and graphs.",
+      "lightValue": "#FBBF24",
+      "darkValue": "#A855F7"
+    },
+    {
+      "token": "color.base.chart-5",
+      "category": "charts",
+      "description": "Data visualization colors \u2014 series 5",
+      "usage": "Use for the fifth data series in charts and graphs.",
+      "lightValue": "#F59E0B",
+      "darkValue": "#F43F5E"
+    },
+    {
+      "token": "color.status.success-*",
+      "category": "status",
+      "description": "Success state colors",
+      "usage": "Use success-background, success-border, success-icon, success-primary-text, and success-secondary-text together in alert, toast, and banner components for positive confirmations.",
+      "lightValue": "#F0FDF4 / #16A34A",
+      "darkValue": "#262629 / #86EFAC"
+    },
+    {
+      "token": "color.status.error-*",
+      "category": "status",
+      "description": "Error state colors",
+      "usage": "Use error-background, error-border, error-icon, and error-*-text together in alert, form validation, and toast components for failure states.",
+      "lightValue": "#FEF2F2 / #DC2626",
+      "darkValue": "#262629 / #F87171"
+    },
+    {
+      "token": "color.status.warning-*",
+      "category": "status",
+      "description": "Warning state colors",
+      "usage": "Use warning-background, warning-border, warning-icon, and warning-*-text together for cautionary alerts and non-blocking issues.",
+      "lightValue": "#FFF7ED / #EA580C",
+      "darkValue": "#262629 / #FDBA74"
+    },
+    {
+      "token": "color.status.caution-*",
+      "category": "status",
+      "description": "Caution state colors",
+      "usage": "Use caution-* tokens for lower-severity warnings such as expiring items or soft deadlines.",
+      "lightValue": "#FFFBEB / #F59E0B",
+      "darkValue": "#262629 / #FDE68A"
+    },
+    {
+      "token": "color.status.info-*",
+      "category": "status",
+      "description": "Informational state colors",
+      "usage": "Use info-* tokens for neutral informational messages, help text callouts, and instructional banners.",
+      "lightValue": "#EFF6FF / #2563EB",
+      "darkValue": "#262629 / #93C5FD"
+    },
+    {
+      "token": "color.status.passive-*",
+      "category": "status",
+      "description": "Passive / neutral state colors",
+      "usage": "Use passive-* tokens for disabled or inactive status indicators that carry no urgency.",
+      "lightValue": "#FAFAF9 / #78716C",
+      "darkValue": "#262629 / #D6D3D1"
+    },
+    {
+      "token": "color.alpha.*",
+      "category": "alpha",
+      "description": "White-to-black translucent overlays",
+      "usage": "Use alpha/* tokens as scrim overlays on modal backdrops, skeleton loaders, or layered surfaces. Light mode values are white-based; dark mode values are black-based. Pick the opacity level by number (5 = most transparent, 90 = most opaque).",
+      "lightValue": "white at varying opacity",
+      "darkValue": "black at varying opacity"
+    },
+    {
+      "token": "spacing.*",
+      "category": "spacing",
+      "description": "Spatial scale based on a 4px base unit (Tailwind-compatible)",
+      "usage": "Use spacing tokens for padding, margin, gap, and inset values. Each step multiplies the base: spacing/1 = 4px, spacing/2 = 8px, spacing/4 = 16px, etc. Use spacing/px for 1px hairline offsets.",
+      "lightValue": "0\u2013384px",
+      "darkValue": "Same"
+    },
+    {
+      "token": "border-radius.*",
+      "category": "border-radius",
+      "description": "Corner rounding scale (Tailwind-compatible)",
+      "usage": "Match the component size to its rounding:\n\u2022 rounded-none (0px) \u2014 sharp corners, data tables.\n\u2022 rounded-sm (2px) \u2014 badges, tags.\n\u2022 rounded-md (6px) \u2014 inputs, buttons.\n\u2022 rounded-lg (10px) \u2014 cards, modals.\n\u2022 rounded-xl / 2xl \u2014 elevated panels.\n\u2022 rounded-3xl / 4xl \u2014 pill-shaped containers.\n\u2022 rounded-full (9999px) \u2014 circular avatars, pill buttons.",
+      "lightValue": "0\u20139999px",
+      "darkValue": "Same"
+    },
+    {
+      "token": "color.brand.mariner.*",
+      "category": "brand",
+      "description": "Mariner \u2014 the primary brand blue",
+      "usage": "Mariner is the core brand color. Use mariner/600 (#0069B4) for primary interactive elements in light mode. Use mariner/400 (#5EACE0) in dark mode. Lighter shades (50\u2013300) work as backgrounds and tints; darker shades (700\u2013950) for pressed states or high-contrast contexts.",
+      "lightValue": "#F0F7FB \u2013 #002845",
+      "darkValue": "Same palette"
+    },
+    {
+      "token": "color.brand.wagyu.*",
+      "category": "brand",
+      "description": "Wagyu \u2014 the brand red / destructive accent",
+      "usage": "Wagyu is the secondary brand color used for warnings, error highlights, and brand accents. Use wagyu/600 (#DB3327) for destructive actions. Lighter shades for backgrounds and tints.",
+      "lightValue": "#FEF3F2 \u2013 #450E0A",
+      "darkValue": "Same palette"
+    },
+    {
+      "token": "color.brand.angus.*",
+      "category": "brand",
+      "description": "Angus \u2014 the neutral grey scale",
+      "usage": "Angus provides the grey ramp for text, borders, backgrounds, and muted surfaces. Use angus/950 (#1F1F21) for dark-mode backgrounds and primary text in light mode. Use angus/100 (#EEEEF0) for light-mode muted surfaces.",
+      "lightValue": "#F7F8F8 \u2013 #1F1F21",
+      "darkValue": "Same palette"
+    },
+    {
+      "token": "color.ui.nav-top-*",
+      "category": "ui",
+      "description": "Top navigation bar surface and foreground",
+      "usage": "Use nav-top-background as the AppBar/topbar fill and nav-top-foreground for text and icon content within it.",
+      "lightValue": "#FFFFFF / #0069B4",
+      "darkValue": "#1F1F21 / #EEEEF0"
+    },
+    {
+      "token": "color.ui.nav-bottom-*",
+      "category": "ui",
+      "description": "Bottom navigation bar surface and foreground",
+      "usage": "Use for mobile bottom-tab navigation bars.",
+      "lightValue": "#0069B4 / #F0F7FB",
+      "darkValue": "#262629 / #F7F8F8"
+    },
+    {
+      "token": "color.ui.overlay",
+      "category": "ui",
+      "description": "Modal backdrop / scrim overlay",
+      "usage": "Use as the semi-transparent overlay behind modal dialogs and drawers.",
+      "lightValue": "#0A0A0A4D",
+      "darkValue": "#FFFFFF1A"
+    },
+    {
+      "token": "color.custom.outline",
+      "category": "custom",
+      "description": "Used in focus effect",
+      "usage": "Apply as the ring color on focusable elements that use a custom focus style rather than the default base/ring token.",
+      "lightValue": "#A3A3A380",
+      "darkValue": "#73737380"
+    }
+  ]
+}
