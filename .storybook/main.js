@@ -13,7 +13,11 @@ const config = {
     name: '@storybook/react-vite',
     options: {},
   },
-  viteFinalConfig: async (config) => {
+  viteFinal: async (config) => {
+    // Set base path for GitHub Pages deployment (repo is served at /ds-tools/)
+    if (process.env.NODE_ENV === 'production') {
+      config.base = '/ds-tools/';
+    }
     // Enable JSON import assertions (used in token stories)
     config.optimizeDeps = config.optimizeDeps || {};
     config.optimizeDeps.include = [
