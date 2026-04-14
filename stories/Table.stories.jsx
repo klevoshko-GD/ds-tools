@@ -420,9 +420,10 @@ const REVENUE_DATA = [
 
 function ScenarioLabel({ scenario }) {
   if (scenario === 'spt') {
-    return (
-      <strong style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-base-foreground, #1f1f21)' }}>SPT</strong>
-    );
+    return <strong style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-base-foreground, #1f1f21)' }}>SPT</strong>;
+  }
+  if (scenario === 'target') {
+    return <strong style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-base-foreground, #1f1f21)' }}>Target</strong>;
   }
   return <BadgeStatus variant={scenario} />;
 }
@@ -459,7 +460,7 @@ export function VarianceBadgeCell({ badge, value, muted = false }) {
 }
 
 export const SRPAccountOverviewHeadcount = {
-  name: 'SRP / Account Overview — Headcount',
+  name: 'SRP / Account Overview — Headcount Revenue',
   render: () => {
     const columns = [
       {
@@ -1039,12 +1040,95 @@ export const SRPAccountOverviewRevenue = {
           SRP Account Overview — Revenue
         </h2>
         <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 24 }}>
-          Revenue by forecast scenario with SPT baseline · ref: Figma node 40000020:80442
+          Revenue by forecast scenario with SPT baseline · ref: Figma node 153:39076
         </p>
         <Table
           columns={columns}
           data={REVENUE_DATA}
           caption="Revenue by forecast scenario"
+        />
+      </div>
+    );
+  },
+};
+
+// ─── SRP / Account Overview (quarterly) ───────────────────────────────────────
+// Ref: Figma node 179:39925
+// Columns: Q1, Q2, Q3, Q4, ANNUAL
+// Rows: Target (plain $amount) + Optimistic/Realistic/Pessimistic ($amount / bold%)
+
+const QUARTERS_AO = ['Q1', 'Q2', 'Q3', 'Q4', 'ANNUAL'];
+
+const ACCOUNT_OVERVIEW_DATA = [
+  {
+    scenario: 'target',
+    Q1: '$1.25M', Q2: '$150.75K', Q3: '$1.10B', Q4: '$999.99K', ANNUAL: '$1.10B',
+  },
+  {
+    scenario: 'optimistic',
+    Q1:     { amount: '$95,432',  pct: '25%' },
+    Q2:     { amount: '$98.765K', pct: '10%' },
+    Q3:     { amount: '$132.10K', pct: '00%' },
+    Q4:     { amount: '$12,345',  pct: '15%' },
+    ANNUAL: { amount: '$000.0K',  pct: '00%' },
+  },
+  {
+    scenario: 'realistic',
+    Q1:     { amount: '$87,654',  pct: '33%' },
+    Q2:     { amount: '$250.88K', pct: '15%' },
+    Q3:     { amount: '$000.0K',  pct: '00%' },
+    Q4:     { amount: '$000.0K',  pct: '00%' },
+    ANNUAL: { amount: '$000.0K',  pct: '00%' },
+  },
+  {
+    scenario: 'pessimistic',
+    Q1:     { amount: '$000.0K', pct: '00%' },
+    Q2:     { amount: '$000.0K', pct: '00%' },
+    Q3:     { amount: '$000.0K', pct: '00%' },
+    Q4:     { amount: '$000.0K', pct: '00%' },
+    ANNUAL: { amount: '$000.0K', pct: '00%' },
+  },
+];
+
+export const SRPAccountOverview = {
+  name: 'SRP / Account Overview',
+  render: () => {
+    const columns = [
+      {
+        key: 'scenario',
+        label: '',
+        width: 140,
+        render: (val) => <ScenarioLabel scenario={val} />,
+      },
+      ...QUARTERS_AO.map((q) => ({
+        key: q,
+        label: q,
+        align: 'right',
+        render: (val, row) => {
+          if (row.scenario === 'target') {
+            return <span style={{ fontSize: 13 }}>{val}</span>;
+          }
+          return (
+            <span style={{ fontSize: 13 }}>
+              {val.amount} / <strong>{val.pct}</strong>
+            </span>
+          );
+        },
+      })),
+    ];
+
+    return (
+      <div style={{ padding: 32, fontFamily: 'system-ui, sans-serif', background: '#fff' }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', marginBottom: 4 }}>
+          SRP Account Overview
+        </h2>
+        <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 24 }}>
+          Quarterly revenue vs. target by forecast scenario · ref: Figma node 179:39925
+        </p>
+        <Table
+          columns={columns}
+          data={ACCOUNT_OVERVIEW_DATA}
+          caption="Account Overview by forecast scenario"
         />
       </div>
     );
