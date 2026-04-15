@@ -273,6 +273,14 @@ const CHART_COLORS = {
   target:      '#005999',
 };
 
+// Light-fill variants for Q3–Q4 Projection bars
+// Match DS token pattern: --color-forecast-{name}-background (added to badge.css)
+const CHART_COLORS_LIGHT = {
+  optimistic:  '#e8f5ec',   /* --color-forecast-optimistic-background  */
+  realistic:   '#fdf3e0',   /* --color-forecast-realistic-background   */
+  pessimistic: '#fce8e7',   /* --color-forecast-pessimistic-background */
+};
+
 // ─── AccountOverviewBarChart ───────────────────────────────────────────────────
 // Compact SVG bar chart sized for the left panel (~360px wide, 148px tall).
 // viewBox: 0 0 320 148 — 4 Q groups × 3 bars (Opt / Real / Pess) + Target line.
@@ -329,13 +337,30 @@ function AccountOverviewBarChart({ data = CHART_DATA }) {
       ))}
 
       {/* ── Bars ─────────────────────────────────────────────── */}
-      {data.map((d, i) => (
-        <g key={d.period}>
-          <rect x={barX(i,0)} y={toY(d.optimistic)}  width={BAR_W} height={barH(d.optimistic)}  fill={CHART_COLORS.optimistic}  rx={2} />
-          <rect x={barX(i,1)} y={toY(d.realistic)}   width={BAR_W} height={barH(d.realistic)}   fill={CHART_COLORS.realistic}   rx={2} />
-          <rect x={barX(i,2)} y={toY(d.pessimistic)} width={BAR_W} height={barH(d.pessimistic)} fill={CHART_COLORS.pessimistic} rx={2} />
-        </g>
-      ))}
+      {/* Q1–Q2 = Actuals: solid fill. Q3–Q4 = Projections: light fill + colored stroke. */}
+      {data.map((d, i) => {
+        const isProjection = i >= 2;
+        const series = [
+          { key: 'optimistic',  bi: 0, val: d.optimistic  },
+          { key: 'realistic',   bi: 1, val: d.realistic   },
+          { key: 'pessimistic', bi: 2, val: d.pessimistic },
+        ];
+        return (
+          <g key={d.period}>
+            {series.map(({ key, bi, val }) => (
+              <rect
+                key={key}
+                x={barX(i, bi)} y={toY(val)}
+                width={BAR_W} height={barH(val)}
+                rx={2}
+                fill={isProjection ? CHART_COLORS_LIGHT[key] : CHART_COLORS[key]}
+                stroke={isProjection ? CHART_COLORS[key] : 'none'}
+                strokeWidth={isProjection ? 1.5 : 0}
+              />
+            ))}
+          </g>
+        );
+      })}
 
       {/* ── Target line ──────────────────────────────────────── */}
       <polyline
@@ -589,4 +614,192 @@ export const AccountOverviewWidgetWithChart = {
     }
     return <ChartWidgetStory />;
   },
+};
+
+// ─── Story 3: Timesheets – Dashboard Widgets ───────────────────────────────────
+// Ref: Figma page "Timesheets - Dashboard widgets" (node 201:11690–11718)
+// Five stat-card variants displayed as a single dashboard row.
+//
+// Token mapping (Figma → DS):
+//   Title label  #4a5565  → --color-base-muted-foreground  (#91959f)
+//   Value text   #101828  → --color-base-foreground        (#1f1f21)
+//   Subtitle     #6a7282  → --color-base-muted-foreground  (#91959f)
+//   Card border  #e0e0e0  → --color-base-input             (#d9dade)
+//   Card bg      #ffffff  → --color-base-card              (#ffffff)
+//   Font family           → Source Sans Pro (inherited from DS)
+
+// ─── Stat-card data ────────────────────────────────────────────────────────────
+
+const TIMESHEET_CARDS = [
+  {
+    id:       'total-revenue',
+    title:    'Total Revenue',
+    value:    '$542,310.00',
+    subtitle: 'Estimated revenue is shown for reference only.',
+    wide:     true,   // 298 px — matches Figma TOTAL REVENUE width
+  },
+  {
+    id:       'billable-time',
+    title:    'Billable time',
+    value:    '5,693 h',
+    subtitle: '21 employees / 21',
+  },
+  {
+    id:       'offshore-overtime',
+    title:    'Offshore Overtime',
+    value:    '69 h',
+    subtitle: 'Invoice vs. Internal',
+  },
+  {
+    id:       'offshore-time',
+    title:    'Offshore time',
+    value:    '4,592 h',
+    subtitle: '14 discrepancies open',
+  },
+  {
+    id:       'onsite-time',
+    title:    'Onsite time',
+    value:    '1,032 h',
+    subtitle: '14 discrepancies open',
+  },
+];
+
+// ─── StatCard component ────────────────────────────────────────────────────────
+
+function StatCard({ title, value, subtitle, wide = false }) {
+  return (
+    <div style={{
+      // Card shell — reuses DS card tokens
+      background:    'var(--color-base-card, #ffffff)',
+      borderRadius:  14,
+      border:        '1px solid var(--color-base-input, #d9dade)',
+      boxShadow:     '0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)',
+      fontFamily:    "'Source Sans Pro','Source Sans 3',system-ui,sans-serif",
+      // Layout
+      display:        'flex',
+      flexDirection:  'column',
+      justifyContent: 'space-between',
+      padding:        16,
+      gap:            28,
+      width:          wide ? 298 : 204,
+      minWidth:       wide ? 298 : 204,
+      height:         158,
+      boxSizing:      'border-box',
+      flexShrink:     0,
+    }}>
+
+      {/* ── Title label — uppercase caption ──── */}
+      <span style={{
+        fontSize:      12,
+        fontWeight:    400,
+        lineHeight:    '16px',
+        color:         'var(--color-base-muted-foreground, #91959f)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+      }}>
+        {title}
+      </span>
+
+      {/* ── Primary metric value ──────────────── */}
+      <span style={{
+        fontSize:   30,
+        fontWeight: 600,
+        lineHeight: '36px',
+        color:      'var(--color-base-foreground, #1f1f21)',
+        letterSpacing: '-0.01em',
+      }}>
+        {value}
+      </span>
+
+      {/* ── Supporting subtitle ───────────────── */}
+      <span style={{
+        fontSize:   12,
+        fontWeight: 400,
+        lineHeight: '16px',
+        color:      'var(--color-base-muted-foreground, #91959f)',
+      }}>
+        {subtitle}
+      </span>
+
+    </div>
+  );
+}
+
+// ─── Story ────────────────────────────────────────────────────────────────────
+
+export const TimesheetsDashboardWidgets = {
+  name: 'Timesheets / Dashboard Widgets',
+  render: () => (
+    <div style={{
+      padding:     32,
+      background:  '#eef0f2',
+      fontFamily:  "'Source Sans Pro','Source Sans 3',system-ui,sans-serif",
+      minHeight:   '100vh',
+    }}>
+      {/* Section heading */}
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{
+          margin: 0,
+          fontSize: 13, fontWeight: 700,
+          color: '#6b7280',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontFamily: 'system-ui,sans-serif',
+        }}>
+          Timesheets — Dashboard Widgets
+        </h2>
+        <p style={{
+          margin: '4px 0 0',
+          fontSize: 12, color: '#9ca3af',
+          fontFamily: 'system-ui,sans-serif',
+        }}>
+          Ref: Figma DS–Sales Revenue Projections · Timesheets - Dashboard widgets
+        </p>
+      </div>
+
+      {/* All 5 cards in a responsive flex row */}
+      <div style={{
+        display:   'flex',
+        flexWrap:  'wrap',
+        gap:       16,
+        alignItems: 'flex-start',
+      }}>
+        {TIMESHEET_CARDS.map(card => (
+          <StatCard key={card.id} {...card} />
+        ))}
+      </div>
+
+      {/* Individual variant labels below */}
+      <div style={{ marginTop: 40 }}>
+        <h3 style={{
+          margin: '0 0 20px',
+          fontSize: 13, fontWeight: 700,
+          color: '#6b7280',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontFamily: 'system-ui,sans-serif',
+        }}>
+          Individual variants
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+          {TIMESHEET_CARDS.map(card => (
+            <div key={card.id}>
+              <div style={{
+                fontSize: 11, fontWeight: 700,
+                color: '#6b7280',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                fontFamily: 'system-ui,sans-serif',
+                marginBottom: 10,
+              }}>
+                {card.title}
+              </div>
+              <StatCard {...card} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  ),
 };

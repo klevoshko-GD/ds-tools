@@ -180,6 +180,15 @@
   background-color: var(--color-forecast-pessimistic, #ce4e45);
 }
 
+/* ─── Forecast background tokens — light tints for projection bars ─────────────
+   Naming mirrors DS status pattern: --color-status-{name}-background.
+   Used by AccountOverviewBarChart Q3–Q4 (projection) bars.           */
+:root {
+  --color-forecast-optimistic-background:  #e8f5ec;   /* light tint of #3d854e */
+  --color-forecast-realistic-background:   #fdf3e0;   /* light tint of #d9993a */
+  --color-forecast-pessimistic-background: #fce8e7;   /* light tint of #ce4e45 */
+}
+
 /* ─── Icon slot ───────────────────────────────────────────────────────────────── */
 
 .badge__icon {
