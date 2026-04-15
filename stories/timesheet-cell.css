@@ -33,9 +33,9 @@
 
 /* Approved — regular hours confirmed */
 .timesheet-cell--approved {
-  background-color: var(--color-forecast-optimistic, #3d854e);
-  color: var(--color-base-primary-foreground, #f7f8f8);
-  border-color: var(--color-forecast-optimistic, #3d854e);
+  background-color: var(--color-status-success-background, #dcfce7);
+  color: var(--color-status-success-foreground, #16a34a);
+  border-color: var(--color-status-success-background, #dcfce7);
 }
 
 /* Bamboo Notified — synced to Bamboo HR */
@@ -132,8 +132,8 @@
 /* No Hours — missing entry */
 .timesheet-cell--no-hours {
   background-color: transparent;
-  color: var(--color-base-muted-foreground, #91959f);
-  border: 1px dashed var(--color-base-destructive, #dc2626);
+  color: var(--color-base-destructive, #dc2626);
+  border: 1.5px dashed var(--color-base-destructive, #dc2626);
 }
 
 /* Hint Applied — pending time-off request */

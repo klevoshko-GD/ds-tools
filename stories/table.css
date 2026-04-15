@@ -130,16 +130,13 @@ table.table {
   background-color: #eef5fb;
 }
 
-/* Error row — contains a cell with an issue (e.g. No Hours)
-   Light red background + 1px red border on top/bottom + 3px red left border */
+/* Error row — in reconciliation context this is unused (errors are cell-level).
+   Kept as a mild tint for other table contexts where row-level error still applies. */
 .table tbody tr.is-error {
-  background-color: var(--color-status-error-background, #fef2f2);
-  box-shadow: inset 3px 0 0 var(--color-base-destructive, #dc2626),
-              inset 0 1px 0 var(--color-base-destructive, #dc2626),
-              inset 0 -1px 0 var(--color-base-destructive, #dc2626);
+  background-color: rgba(220, 38, 38, 0.04);
 }
 .table tbody tr.is-error:hover {
-  background-color: #fee2e2;
+  background-color: rgba(220, 38, 38, 0.07);
 }
 
 /* Assignee group header row */
@@ -152,27 +149,116 @@ table.table {
   cursor: default;
 }
 
-/* Variance row */
+/* Variance row — text color handled inline per-cell; subtle top divider only */
 .table tbody tr.is-variance td {
-  border-top: 1px dashed var(--color-base-border, #d9dade);
-  background-color: #fafafa;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+  background-color: transparent;
 }
 
-/* First row of a reconciliation group — heavier top separator */
+/* First row of a reconciliation group — clean separator between assignee blocks */
 .table tbody tr.is-group-start td {
-  border-top: 2px solid var(--color-base-border, #d9dade);
-}
-.table tbody tr.is-group-start.is-error td {
-  border-top: 2px solid var(--color-base-destructive, #dc2626);
+  border-top: 1.5px solid var(--color-base-border, #d9dade);
 }
 
-/* Assignment % row — subtle tinted background */
+/* Assignment % row — very subtle blue wash */
 .table tbody tr.is-assign-pct td {
-  background-color: rgba(0, 105, 180, 0.04);
+  background-color: rgba(0, 105, 180, 0.035);
 }
 .table tbody tr.is-assign-pct td.table__td--sticky-left,
 .table tbody tr.is-assign-pct td.table__td--sticky-right {
-  background-color: rgba(0, 105, 180, 0.04);
+  background-color: rgba(0, 105, 180, 0.035);
+}
+
+/* ─── Reconciliation-specific table overrides ─────────────────────────────────
+   Used via wrapperClassName="table-wrapper--recon".
+   Rule: NO horizontal lines inside an assignee group.
+         ONE separator line between groups (border-top on is-group-start).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Fix sticky column gaps:
+ *
+ * 1. border-collapse: separate + border-spacing: 0
+ *    Cells render independently so sticky cells never share a border with
+ *    a scrolling neighbour — eliminates the 1px seam/artifact on scroll.
+ *
+ * 2. table-layout: fixed
+ *    Forces the browser to use the exact pixel widths specified on <th>.
+ *
+ * NOTE: the table WIDTH must be set as an explicit pixel value via the
+ * inline `style` prop on the Table component (style={{ width: totalPx }}).
+ * Using width: 100% (the base rule) or max-content would scale column widths
+ * away from the spec values, making the JS-computed sticky offsets wrong
+ * and leaving a visible gap between sticky and scrollable columns.
+ */
+.table-wrapper--recon table.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.table-wrapper--recon .table td,
+.table-wrapper--recon .table th {
+  /*
+   * border-box makes `width` include padding, so the col.width values
+   * we specify (180, 148, 52, 66 …) are the TOTAL cell widths.
+   * This makes the JS-computed sticky left/right offsets exact —
+   * offset = sum of col.width values of preceding sticky columns.
+   */
+  box-sizing: border-box;
+  padding: 7px 12px;
+}
+
+.table-wrapper--recon .table th {
+  /* Restore header bottom separator on <th> (tr border-bottom doesn't fire
+     with border-collapse: separate) */
+  border-bottom: 1px solid var(--color-base-border, #d9dade);
+}
+
+/* Strip every row's bottom border inside recon table */
+.table-wrapper--recon .table tbody tr {
+  border-bottom: none;
+}
+
+/* Group separator — solid line above the first row of each assignee block */
+.table-wrapper--recon .table tbody tr.is-group-start td {
+  border-top: 1px solid var(--color-base-border, #d9dade);
+}
+
+/* Remove the dashed top border from variance rows (no lines inside group) */
+.table-wrapper--recon .table tbody tr.is-variance td {
+  border-top: none;
+  background-color: transparent;
+}
+
+/*
+ * Assignment % row — solid white background (no transparency).
+ * Semi-transparent fills let scrolling day columns bleed through
+ * sticky cells, creating "holes" on horizontal scroll.
+ */
+.table-wrapper--recon .table tbody tr.is-assign-pct td {
+  background-color: var(--color-base-card, #ffffff);
+}
+
+/*
+ * Sticky cells — always solid white so scrolling content is fully
+ * covered. These rules come AFTER is-variance / is-assign-pct so they
+ * win the specificity tie (same selector weight, later in source = wins).
+ */
+.table-wrapper--recon .table tbody tr td.table__td--sticky-left,
+.table-wrapper--recon .table tbody tr td.table__td--sticky-right {
+  background: var(--color-base-card, #ffffff);
+}
+
+.table-wrapper--recon .table tbody tr:hover td.table__td--sticky-left,
+.table-wrapper--recon .table tbody tr:hover td.table__td--sticky-right {
+  background: var(--color-base-muted, #f7f8f8);
+}
+
+/* Assignment % sticky cells — match the solid white row bg */
+.table-wrapper--recon .table tbody tr.is-assign-pct td.table__td--sticky-left,
+.table-wrapper--recon .table tbody tr.is-assign-pct td.table__td--sticky-right {
+  background: var(--color-base-card, #ffffff);
 }
 
 /* ─── Striped variant ─────────────────────────────────────────────────────────── */
@@ -232,6 +318,59 @@ table.table {
 .table tbody tr.is-variance td.table__td--sticky-left,
 .table tbody tr.is-variance td.table__td--sticky-right {
   background: #fafafa;
+}
+
+/* ─── Time Reports variant — restores row separators inside recon table ──────── */
+
+/*
+ * .table-wrapper--recon strips all tbody row borders (border-bottom: none).
+ * Adding --time-reports re-enables a standard divider between each data row.
+ * Specificity: 0-2-3 beats the 0-1-3 recon rule above → wins without !important.
+ */
+.table-wrapper--time-reports.table-wrapper--recon .table tbody tr {
+  border-bottom: 1px solid var(--color-base-border, #d9dade);
+}
+
+.table-wrapper--time-reports.table-wrapper--recon .table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Sticky cells inherit the row border via border-collapse: separate;
+   we need to carry the bottom border on the cells themselves */
+.table-wrapper--time-reports.table-wrapper--recon .table tbody tr td {
+  border-bottom: 1px solid var(--color-base-border, #d9dade);
+}
+
+.table-wrapper--time-reports.table-wrapper--recon .table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ─── Seamless variant — no outer border/radius (used when nested inside a panel) ── */
+
+.table-wrapper--seamless {
+  border: none;
+  border-radius: 0;
+}
+
+/* Tighter cell padding when table is embedded inside a widget panel */
+.table-wrapper--seamless .table th {
+  padding: 8px 14px;
+  font-size: 11px;
+}
+
+.table-wrapper--seamless .table td {
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+/* Row separators are lighter in seamless context */
+.table-wrapper--seamless .table tbody tr {
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-wrapper--seamless .table thead tr {
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+  background-color: #fafafa;
 }
 
 /* ─── Footer / Pagination bar ─────────────────────────────────────────────────── */

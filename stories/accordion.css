@@ -162,6 +162,15 @@
   margin: 0;
 }
 
+/* ─── Time Reports variant ───────────────────────────────────────────────────
+   Removes body padding so the table renders flush inside the accordion.
+   Applied as: className="accordion--timesheets accordion--time-reports"
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.accordion--time-reports .accordion-content__body {
+  padding: 0;
+}
+
 /* ─── SRP (Sales Revenue Projections) variant ────────────────────────────────
    Ref: Figma DS (AI) node 40000016:54522
    4 variants: Active · Draft · Inactive Project · Archived Opportunity

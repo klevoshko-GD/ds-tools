@@ -6,6 +6,9 @@ import { Avatar } from './Avatar';
 import { Button } from './Button';
 import { Input } from './Input';
 import { TimesheetCell } from './TimesheetCell';
+import { Toggle } from './Toggle';
+import { Tabs } from './Tabs';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './Accordion';
 
 // ─── Sample data ───────────────────────────────────────────────────────────────
 
@@ -553,132 +556,7 @@ const TIMESHEET_ASSIGNEES_QUARTER = [
 const WEEK_DAYS = ['Feb 1', 'Feb 2', 'Feb 3', 'Feb 4', 'Feb 5', 'Feb 6', 'Feb 7'];
 const QUARTERS = ['Q1', 'Q2', 'Q3', 'Q4'];
 
-function TimesheetProjectHeader() {
-  return (
-    <div style={{ padding: '12px 20px', background: 'var(--color-base-card, #fff)', borderBottom: '1px solid var(--color-base-border, #d9dade)' }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-base-muted-foreground, #91959f)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
-        Project / Assignment
-      </div>
-      <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--color-base-foreground, #1f1f21)' }}>
-        Boston Global HCP Web Experience Jan
-      </div>
-      <div style={{ fontSize: 13, color: 'var(--color-base-muted-foreground, #91959f)' }}>
-        Cloud and App Platforms and Engineering / Quality &amp; Performance Engineering
-      </div>
-    </div>
-  );
-}
-
-export const TimesheetWeek = {
-  name: 'Timesheet — Week',
-  render: () => {
-    const columns = [
-      {
-        key: 'assignee', label: 'Assignee', sticky: 'left', width: 200,
-        render: (_, row) => (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Avatar size="8" initials={row.name.split(' ').map(n => n[0]).join('')} />
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--color-base-foreground, #1f1f21)', lineHeight: 1.3 }}>{row.name}</div>
-              <div style={{ fontSize: 11, color: 'var(--color-base-muted-foreground, #91959f)', lineHeight: 1.3 }}>{row.role}</div>
-            </div>
-          </div>
-        ),
-      },
-      { key: 'rate',        label: 'Rate',        sticky: 'left', width: 80,  render: (_, row) => <span style={{ fontSize: 13 }}>{row.rate}</span> },
-      { key: 'involvement', label: 'Involvement', sticky: 'left', width: 110, render: (_, row) => <span style={{ fontSize: 13 }}>{row.involvement}</span> },
-      { key: 'assignment',  label: 'Assignment',  render: (_, row) => <Badge variant="success">{row.assignment}</Badge> },
-      ...WEEK_DAYS.map(day => ({
-        key: day, label: day, align: 'center',
-        render: (_, row) => <TimesheetCell state={row.days[day]} small />,
-      })),
-      { key: 'hours',   label: 'Hours',   align: 'right', sticky: 'right', width: 90,  render: (_, row) => <span style={{ fontSize: 13, fontWeight: 600 }}>{row.hours}</span> },
-      { key: 'revenue', label: 'Revenue', align: 'right', sticky: 'right', width: 110, render: (_, row) => <span style={{ fontSize: 13, fontWeight: 600 }}>{row.revenue}</span> },
-    ];
-
-    const data = TIMESHEET_ASSIGNEES_WEEK.map(r => ({ ...r }));
-
-    return (
-      <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f7f8f8' }}>
-        <div style={{ padding: 32 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', marginBottom: 4 }}>Timesheet — Week</h2>
-          <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 24 }}>
-            Weekly view with day cells · error row = light red bg + 1px red border · ref: Figma node 40000022:1609
-          </p>
-        </div>
-        <div style={{ background: '#fff', borderRadius: 8, border: '1px solid var(--color-base-border, #d9dade)', overflow: 'hidden', margin: '0 32px 32px' }}>
-          <TimesheetProjectHeader />
-          <Table
-            columns={columns}
-            data={data}
-            rowClassName={(row) => Object.values(row.days).includes('no-hours') ? 'is-error' : ''}
-          />
-        </div>
-      </div>
-    );
-  },
-};
-
-export const TimesheetQuarter = {
-  name: 'Timesheet — Quarter',
-  render: () => {
-    const columns = [
-      {
-        key: 'assignee', label: 'Assignee', sticky: 'left', width: 200,
-        render: (_, row) => (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Avatar size="8" initials={row.name.split(' ').map(n => n[0]).join('')} />
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--color-base-foreground, #1f1f21)', lineHeight: 1.3 }}>{row.name}</div>
-              <div style={{ fontSize: 11, color: 'var(--color-base-muted-foreground, #91959f)', lineHeight: 1.3 }}>{row.role}</div>
-            </div>
-          </div>
-        ),
-      },
-      { key: 'rate',        label: 'Rate',        sticky: 'left', width: 80,  render: (_, row) => <span style={{ fontSize: 13 }}>{row.rate}</span> },
-      { key: 'involvement', label: 'Involvement', sticky: 'left', width: 110, render: (_, row) => <span style={{ fontSize: 13 }}>{row.involvement}</span> },
-      { key: 'assignment',  label: 'Assignment',  render: (_, row) => <Badge variant="success">{row.assignment}</Badge> },
-      ...QUARTERS.map(q => ({
-        key: q, label: q, align: 'center',
-        render: (_, row) => {
-          const val = row.quarters[q];
-          const isLow = val < 480;
-          return (
-            <TimesheetCell
-              state={isLow ? 'no-hours' : 'approved'}
-              value={String(val)}
-              small={false}
-              style={{ width: 48, height: 40, fontSize: 13 }}
-            />
-          );
-        },
-      })),
-      { key: 'hours',   label: 'Hours',   align: 'right', sticky: 'right', width: 90,  render: (_, row) => <span style={{ fontSize: 13, fontWeight: 600 }}>{row.hours}</span> },
-      { key: 'revenue', label: 'Revenue', align: 'right', sticky: 'right', width: 110, render: (_, row) => <span style={{ fontSize: 13, fontWeight: 600 }}>{row.revenue}</span> },
-    ];
-
-    const data = TIMESHEET_ASSIGNEES_QUARTER.map(r => ({ ...r }));
-
-    return (
-      <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f7f8f8' }}>
-        <div style={{ padding: 32 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', marginBottom: 4 }}>Timesheet — Quarter</h2>
-          <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 24 }}>
-            Quarterly view with aggregated hours per quarter · error row = light red bg + 1px red border · ref: Figma node 40000022:1734
-          </p>
-        </div>
-        <div style={{ background: '#fff', borderRadius: 8, border: '1px solid var(--color-base-border, #d9dade)', overflow: 'hidden', margin: '0 32px 32px' }}>
-          <TimesheetProjectHeader />
-          <Table
-            columns={columns}
-            data={data}
-            rowClassName={(row) => Object.values(row.quarters).some(v => v < 480) ? 'is-error' : ''}
-          />
-        </div>
-      </div>
-    );
-  },
-};
+// TimesheetProjectHeader replaced by accordion in ReconciliationStory
 
 // ─── Timesheet — Reconciliation ──────────────────────────────────────────────
 // Ref: Figma node 40000024:2381
@@ -690,115 +568,137 @@ export const TimesheetQuarter = {
 // Structure: 1 assignee = 5 rows (SP + Invoice + CSV + Assignment % + Variance)
 // Ref: Figma node 40000024:2381
 
-const RECON_WEEK_DAYS   = ['Feb 1', 'Feb 2', 'Feb 3', 'Feb 4', 'Feb 5', 'Feb 6', 'Feb 7'];
-const RECON_MONTH_WEEKS = ['Feb W1', 'Feb W2', 'Feb W3', 'Feb W4'];
+const RECON_WEEK_DAYS  = ['Feb 1', 'Feb 2', 'Feb 3', 'Feb 4', 'Feb 5', 'Feb 6', 'Feb 7'];
+const RECON_MONTH_DAYS = Array.from({ length: 28 }, (_, i) => `Feb ${i + 1}`);
 
-// One entry per assignee. sources: SP / Invoice / CSV.
-// dayHours / weekHours values: null = weekend, 0 = no-hours, number = approved hours.
+// Weekend days in February (Feb 1 = Sun, Feb 7 = Sat, repeating every 7 days)
+const _FEB_WE = new Set([1, 7, 8, 14, 15, 21, 22, 28]);
+
+// Generate full-month day-hours map. Weekends → null, workdays → 8 unless overridden.
+function _febH(overrides = {}) {
+  const r = {};
+  for (let d = 1; d <= 28; d++) {
+    const k = `Feb ${d}`;
+    r[k] = _FEB_WE.has(d) ? null : (k in overrides ? overrides[k] : 8);
+  }
+  return r;
+}
+
+// Generate full-month assignment-% map. Weekends → null, workdays → '100%' unless overridden.
+function _febPct(overrides = {}) {
+  const r = {};
+  for (let d = 1; d <= 28; d++) {
+    const k = `Feb ${d}`;
+    r[k] = _FEB_WE.has(d) ? null : (k in overrides ? overrides[k] : '100%');
+  }
+  return r;
+}
+
+// One entry per assignee. Each source carries:
+//   dayHours          — full 28-day map (null=weekend, 0=no-hours, n=hours)
+//   weeklyTotalHours  — shown in "Total Hrs" column in Week view (first 7 days)
+//   monthlyTotalHours — shown in "Total Hrs" column in Month view
 const RECON_ASSIGNEES = [
   {
     id: 1, name: 'David Rayan', role: 'Senior Frontend Engineer',
     sources: [
       {
         source: 'SuitProjects Pro', rate: '$90',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 32 },
-        totalHours: '40h', totalRevenue: '$3,600',
+        dayHours: _febH(),
+        weeklyTotalHours: '40h',  weeklyTotalRevenue: '$3,600',
+        monthlyTotalHours: '160h', monthlyTotalRevenue: '$14,400',
       },
       {
         source: 'Invoice', rate: '$90',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 0, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 32, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '32h', totalRevenue: '$2,880',
+        dayHours: _febH({ 'Feb 5': 0, 'Feb 19': 0 }),
+        weeklyTotalHours: '32h',  weeklyTotalRevenue: '$2,880',
+        monthlyTotalHours: '144h', monthlyTotalRevenue: '$12,960',
       },
       {
         source: 'Client CSV', rate: '$90',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 0, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 32, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 32 },
-        totalHours: '32h', totalRevenue: '$2,880',
+        dayHours: _febH({ 'Feb 4': 0, 'Feb 25': 0 }),
+        weeklyTotalHours: '32h',  weeklyTotalRevenue: '$2,880',
+        monthlyTotalHours: '144h', monthlyTotalRevenue: '$12,960',
       },
     ],
-    dayAssignPct:  { 'Feb 1': null, 'Feb 2': '100%', 'Feb 3': '100%', 'Feb 4': '80%', 'Feb 5': '75%', 'Feb 6': '100%', 'Feb 7': null },
-    weekAssignPct: { 'Feb W1': '87%', 'Feb W2': '100%', 'Feb W3': '100%', 'Feb W4': '87%' },
+    dayAssignPct: _febPct({ 'Feb 4': '80%', 'Feb 5': '75%', 'Feb 18': '80%', 'Feb 19': '75%' }),
   },
   {
     id: 2, name: 'Sofia Reyes', role: 'Product Designer',
     sources: [
       {
         source: 'SuitProjects Pro', rate: '$85',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 0, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 32, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '32h', totalRevenue: '$2,720',
+        dayHours: _febH({ 'Feb 3': 0, 'Feb 17': 0 }),
+        weeklyTotalHours: '32h',  weeklyTotalRevenue: '$2,720',
+        monthlyTotalHours: '144h', monthlyTotalRevenue: '$12,240',
       },
       {
         source: 'Invoice', rate: '$85',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '40h', totalRevenue: '$3,400',
+        dayHours: _febH(),
+        weeklyTotalHours: '40h',  weeklyTotalRevenue: '$3,400',
+        monthlyTotalHours: '160h', monthlyTotalRevenue: '$13,600',
       },
       {
         source: 'Client CSV', rate: '$85',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '40h', totalRevenue: '$3,400',
+        dayHours: _febH(),
+        weeklyTotalHours: '40h',  weeklyTotalRevenue: '$3,400',
+        monthlyTotalHours: '160h', monthlyTotalRevenue: '$13,600',
       },
     ],
-    dayAssignPct:  { 'Feb 1': null, 'Feb 2': '100%', 'Feb 3': '33%', 'Feb 4': '100%', 'Feb 5': '100%', 'Feb 6': '100%', 'Feb 7': null },
-    weekAssignPct: { 'Feb W1': '100%', 'Feb W2': '87%', 'Feb W3': '100%', 'Feb W4': '100%' },
+    dayAssignPct: _febPct({ 'Feb 3': '33%', 'Feb 17': '33%' }),
   },
   {
     id: 3, name: 'James Carter', role: 'Backend Engineer',
     sources: [
       {
         source: 'SuitProjects Pro', rate: '$110',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '40h', totalRevenue: '$4,400',
+        dayHours: _febH(),
+        weeklyTotalHours: '40h',  weeklyTotalRevenue: '$4,400',
+        monthlyTotalHours: '160h', monthlyTotalRevenue: '$17,600',
       },
       {
         source: 'Invoice', rate: '$110',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '40h', totalRevenue: '$4,400',
+        dayHours: _febH(),
+        weeklyTotalHours: '40h',  weeklyTotalRevenue: '$4,400',
+        monthlyTotalHours: '160h', monthlyTotalRevenue: '$17,600',
       },
       {
         source: 'Client CSV', rate: '$110',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 8, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 40, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '40h', totalRevenue: '$4,400',
+        dayHours: _febH(),
+        weeklyTotalHours: '40h',  weeklyTotalRevenue: '$4,400',
+        monthlyTotalHours: '160h', monthlyTotalRevenue: '$17,600',
       },
     ],
-    dayAssignPct:  { 'Feb 1': null, 'Feb 2': '100%', 'Feb 3': '100%', 'Feb 4': '100%', 'Feb 5': '100%', 'Feb 6': '100%', 'Feb 7': null },
-    weekAssignPct: { 'Feb W1': '100%', 'Feb W2': '100%', 'Feb W3': '100%', 'Feb W4': '100%' },
+    dayAssignPct: _febPct(),
   },
   {
     id: 4, name: 'Elena Morris', role: 'Frontend Developer',
     sources: [
       {
         source: 'SuitProjects Pro', rate: '$85',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 0, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 24, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '32h', totalRevenue: '$2,720',
+        dayHours: _febH({ 'Feb 4': 0, 'Feb 13': 0 }),
+        weeklyTotalHours: '32h',  weeklyTotalRevenue: '$2,720',
+        monthlyTotalHours: '144h', monthlyTotalRevenue: '$12,240',
       },
       {
         source: 'Invoice', rate: '$85',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 0, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 32, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '32h', totalRevenue: '$2,720',
+        dayHours: _febH({ 'Feb 4': 0 }),
+        weeklyTotalHours: '32h',  weeklyTotalRevenue: '$2,720',
+        monthlyTotalHours: '152h', monthlyTotalRevenue: '$12,920',
       },
       {
         source: 'Client CSV', rate: '$85',
-        dayHours:  { 'Feb 1': null, 'Feb 2': 8, 'Feb 3': 8, 'Feb 4': 0, 'Feb 5': 8, 'Feb 6': 8, 'Feb 7': null },
-        weekHours: { 'Feb W1': 40, 'Feb W2': 32, 'Feb W3': 40, 'Feb W4': 40 },
-        totalHours: '32h', totalRevenue: '$2,720',
+        dayHours: _febH({ 'Feb 4': 0 }),
+        weeklyTotalHours: '32h',  weeklyTotalRevenue: '$2,720',
+        monthlyTotalHours: '152h', monthlyTotalRevenue: '$12,920',
       },
     ],
-    dayAssignPct:  { 'Feb 1': null, 'Feb 2': '100%', 'Feb 3': '100%', 'Feb 4': '0%', 'Feb 5': '100%', 'Feb 6': '100%', 'Feb 7': null },
-    weekAssignPct: { 'Feb W1': '100%', 'Feb W2': '67%', 'Feb W3': '100%', 'Feb W4': '100%' },
+    dayAssignPct: _febPct({ 'Feb 4': '0%', 'Feb 13': '50%' }),
   },
 ];
 
-// Build 5 flat rows per assignee: 3 source rows + Assignment % row + Variance row.
+// Build 5 flat rows per assignee: 3 source rows + Assignment % + Variance.
+// Both week and month views use dayHours — periods slice the relevant columns.
 function buildReconRows(assignees, periods, viewMode) {
   const rows = [];
   const isWeek = viewMode === 'week';
@@ -806,11 +706,11 @@ function buildReconRows(assignees, periods, viewMode) {
   for (const a of assignees) {
     const [sp, inv] = a.sources;
 
-    // Compute per-period variance (Invoice − SP hours)
+    // Per-period variance: Invoice − SP (both always use dayHours)
     const variancePerPeriod = {};
     for (const p of periods) {
-      const spH  = isWeek ? sp.dayHours[p]  : sp.weekHours[p];
-      const invH = isWeek ? inv.dayHours[p] : inv.weekHours[p];
+      const spH  = sp.dayHours[p];
+      const invH = inv.dayHours[p];
       if (spH === null || invH === null) { variancePerPeriod[p] = null; continue; }
       const diff = invH - spH;
       variancePerPeriod[p] = diff === 0 ? '—' : (diff > 0 ? `+${diff}h` : `${diff}h`);
@@ -820,10 +720,7 @@ function buildReconRows(assignees, periods, viewMode) {
 
     // 3 source rows
     a.sources.forEach((src, si) => {
-      const hasDiscrepancy = periods.some(p => {
-        const h = isWeek ? src.dayHours[p] : src.weekHours[p];
-        return h === 0;
-      });
+      const hasDiscrepancy = periods.some(p => src.dayHours[p] === 0);
       rows.push({
         ...base,
         _type: 'source',
@@ -831,9 +728,9 @@ function buildReconRows(assignees, periods, viewMode) {
         _hasDiscrepancy: hasDiscrepancy,
         source: src.source,
         rate: src.rate,
-        totalHours: src.totalHours,
-        totalRevenue: src.totalRevenue,
-        _hours: isWeek ? src.dayHours : src.weekHours,
+        totalHours:   isWeek ? src.weeklyTotalHours   : src.monthlyTotalHours,
+        totalRevenue: isWeek ? src.weeklyTotalRevenue  : src.monthlyTotalRevenue,
+        _hours: src.dayHours,
       });
     });
 
@@ -843,25 +740,21 @@ function buildReconRows(assignees, periods, viewMode) {
       _type: 'assignmentPct',
       _isFirstInGroup: false,
       source: 'Assignment %',
-      rate: '—',
-      totalHours: '—',
-      totalRevenue: '—',
-      _pct: isWeek ? a.dayAssignPct : a.weekAssignPct,
+      rate: '—', totalHours: '—', totalRevenue: '—',
+      _pct: a.dayAssignPct,
     });
 
     // Variance row (Invoice total − SP total)
-    const invTotalH = parseInt(inv.totalHours);
-    const spTotalH  = parseInt(sp.totalHours);
-    const varDiff   = invTotalH - spTotalH;
-    const varHours  = varDiff === 0 ? '—' : (varDiff > 0 ? `+${varDiff}h` : `${varDiff}h`);
+    const invH = parseInt(isWeek ? inv.weeklyTotalHours  : inv.monthlyTotalHours);
+    const spH  = parseInt(isWeek ? sp.weeklyTotalHours   : sp.monthlyTotalHours);
+    const diff = invH - spH;
     rows.push({
       ...base,
       _type: 'variance',
       _isFirstInGroup: false,
       source: 'Variance',
-      rate: '—',
-      totalHours: varHours,
-      totalRevenue: '—',
+      rate: '—', totalRevenue: '—',
+      totalHours: diff === 0 ? '—' : (diff > 0 ? `+${diff}h` : `${diff}h`),
       _variance: variancePerPeriod,
     });
   }
@@ -873,9 +766,10 @@ export const TimesheetReconciliation = {
   render: () => {
     function ReconciliationStory() {
       const [viewMode, setViewMode] = useState('week');
-      const periods = viewMode === 'week' ? RECON_WEEK_DAYS : RECON_MONTH_WEEKS;
+      const periods = viewMode === 'week' ? RECON_WEEK_DAYS : RECON_MONTH_DAYS;
       const rows = buildReconRows(RECON_ASSIGNEES, periods, viewMode);
 
+      // ── Helpers ──────────────────────────────────────────────────────────────
       const varColor = (val) => {
         if (!val || val === '—') return 'var(--color-base-muted-foreground, #91959f)';
         return val.startsWith('+') ? 'var(--color-status-success-foreground, #16a34a)'
@@ -883,114 +777,210 @@ export const TimesheetReconciliation = {
              : 'var(--color-base-muted-foreground, #91959f)';
       };
 
+      // Inline day-cell for reconciliation — shows numbers, NOT state icons.
+      // Valid: green pill  |  Weekend: dash  |  Zero: dashed red border
+      function ReconHoursCell({ hours }) {
+        if (hours === null) {
+          return <span style={{ color: 'var(--color-base-border, #d9dade)', fontSize: 12, userSelect: 'none' }}>—</span>;
+        }
+        if (hours === 0) {
+          return (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: 28, height: 22, borderRadius: 4,
+              border: '1.5px dashed var(--color-base-destructive, #dc2626)',
+              color: 'var(--color-base-destructive, #dc2626)',
+              fontSize: 11, fontWeight: 700, lineHeight: 1,
+            }}>0</span>
+          );
+        }
+        return (
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            minWidth: 28, height: 22, borderRadius: 4,
+            background: 'var(--color-status-success-background, #dcfce7)',
+            color: 'var(--color-status-success-foreground, #16a34a)',
+            fontSize: 12, fontWeight: 700, lineHeight: 1,
+          }}>{hours}</span>
+        );
+      }
+
+      // ── Columns ──────────────────────────────────────────────────────────────
       const columns = [
         {
-          key: 'assignee', label: 'Assignee', sticky: 'left', width: 190,
+          key: 'assignee', label: 'Assignee', sticky: 'left', width: 180,
           render: (_, row) => row._isFirstInGroup ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Avatar size="8" initials={row._name.split(' ').map(n => n[0]).join('')} />
-              <div>
-                <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--color-base-foreground, #1f1f21)', lineHeight: 1.3 }}>{row._name}</div>
-                <div style={{ fontSize: 11, color: 'var(--color-base-muted-foreground, #91959f)', lineHeight: 1.3 }}>{row._role}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <Avatar size="8" />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--color-base-foreground, #1f1f21)', lineHeight: 1.35, whiteSpace: 'nowrap' }}>
+                  {row._name}
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--color-base-muted-foreground, #91959f)', lineHeight: 1.35, whiteSpace: 'nowrap' }}>
+                  {row._role}
+                </div>
               </div>
             </div>
           ) : null,
         },
         {
-          key: 'source', label: 'Source', sticky: 'left', width: 160,
-          render: (val, row) => (
-            <span style={{
-              fontSize: 12, fontWeight: 600,
-              color: row._type === 'variance'     ? varColor(row.totalHours)
-                   : row._type === 'assignmentPct' ? 'var(--color-base-primary, #0069b4)'
-                   : 'var(--color-base-foreground, #1f1f21)',
-            }}>{val}</span>
-          ),
+          key: 'source', label: 'Source', sticky: 'left', width: 148,
+          render: (val, row) => {
+            if (row._type === 'variance') {
+              return (
+                <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--color-base-muted-foreground, #91959f)' }}>
+                  {val}
+                </span>
+              );
+            }
+            if (row._type === 'assignmentPct') {
+              return (
+                <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--color-base-muted-foreground, #91959f)' }}>
+                  {val}
+                </span>
+              );
+            }
+            // All source rows use the same muted style
+            return (
+              <span style={{
+                fontSize: 12,
+                fontWeight: 400,
+                color: 'var(--color-base-muted-foreground, #91959f)',
+              }}>{val}</span>
+            );
+          },
         },
         {
-          key: 'rate', label: 'Rate', sticky: 'left', width: 75,
-          render: (val) => <span style={{ fontSize: 12, color: 'var(--color-base-muted-foreground, #91959f)' }}>{val}</span>,
+          key: 'rate', label: 'Rate', sticky: 'left', width: 52,
+          render: (val, row) => {
+            if (row._type !== 'source') return null;
+            return <span style={{ fontSize: 12, color: 'var(--color-base-muted-foreground, #91959f)' }}>{val}</span>;
+          },
         },
         ...periods.map((period) => ({
-          key: period, label: period, align: 'center', width: 72,
+          key: period, label: period, align: 'center', width: 66,
           render: (_, row) => {
             if (row._type === 'source') {
-              const h = row._hours[period];
-              if (h === null) return <TimesheetCell state="weekend" small />;
-              return <TimesheetCell state={h === 0 ? 'no-hours' : 'approved'} small />;
+              return <ReconHoursCell hours={row._hours[period]} />;
             }
             if (row._type === 'assignmentPct') {
               const pct = row._pct[period];
-              if (pct === null) return <span style={{ color: 'var(--color-base-border, #d9dade)', fontSize: 12 }}>—</span>;
-              return <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-base-primary, #0069b4)' }}>{pct}</span>;
+              if (pct === null) {
+                return <span style={{ color: 'var(--color-base-border, #d9dade)', fontSize: 12 }}>—</span>;
+              }
+              return (
+                <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--color-base-muted-foreground, #91959f)' }}>
+                  {pct}
+                </span>
+              );
             }
             if (row._type === 'variance') {
               const val = row._variance[period];
-              if (val === null) return <span style={{ color: 'var(--color-base-border, #d9dade)', fontSize: 12 }}>—</span>;
-              return <span style={{ fontSize: 12, fontWeight: 600, color: varColor(val) }}>{val}</span>;
+              if (val === null) {
+                return <span style={{ color: 'var(--color-base-border, #d9dade)', fontSize: 12 }}>—</span>;
+              }
+              if (val === '—') {
+                return <span style={{ color: 'var(--color-base-muted-foreground, #91959f)', fontSize: 12 }}>—</span>;
+              }
+              return (
+                <span style={{ fontSize: 12, fontWeight: 700, color: varColor(val) }}>{val}</span>
+              );
             }
             return null;
           },
         })),
         {
-          key: 'totalHours', label: 'Total Hrs', align: 'right', sticky: 'right', width: 90,
-          render: (val, row) => (
-            <span style={{
-              fontSize: 12, fontWeight: 600,
-              color: row._type === 'variance' ? varColor(val) : 'var(--color-base-foreground, #1f1f21)',
-            }}>{val}</span>
-          ),
+          key: 'totalHours', label: 'Total Hrs', align: 'right', sticky: 'right', width: 84,
+          render: (val, row) => {
+            if (row._type === 'assignmentPct') {
+              return <span style={{ fontSize: 12, color: 'var(--color-base-muted-foreground, #91959f)' }}>—</span>;
+            }
+            return (
+              <span style={{
+                fontSize: 12, fontWeight: 600,
+                color: row._type === 'variance' ? varColor(val) : 'var(--color-base-foreground, #1f1f21)',
+              }}>{val}</span>
+            );
+          },
         },
         {
-          key: 'totalRevenue', label: 'Revenue', align: 'right', sticky: 'right', width: 110,
-          render: (val, row) => (
-            <span style={{
-              fontSize: 12,
-              fontWeight: row._type === 'source' ? 600 : 400,
-              color: row._type === 'assignmentPct' || row._type === 'variance'
-                ? 'var(--color-base-muted-foreground, #91959f)'
-                : 'var(--color-base-foreground, #1f1f21)',
-            }}>{val}</span>
-          ),
+          key: 'totalRevenue', label: 'Revenue', align: 'right', sticky: 'right', width: 100,
+          render: (val, row) => {
+            if (row._type !== 'source') {
+              return <span style={{ fontSize: 12, color: 'var(--color-base-muted-foreground, #91959f)' }}>—</span>;
+            }
+            return (
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-base-foreground, #1f1f21)' }}>
+                {val}
+              </span>
+            );
+          },
         },
       ];
 
+      // Row classes — NO row-level error; error is cell-level only (dashed red border in ReconHoursCell)
       const rowClassName = (row) => {
         const cls = [];
-        if (row._isFirstInGroup) cls.push('is-group-start');
-        if (row._type === 'source' && row._hasDiscrepancy) cls.push('is-error');
+        if (row._isFirstInGroup)         cls.push('is-group-start');
         if (row._type === 'assignmentPct') cls.push('is-assign-pct');
-        if (row._type === 'variance') cls.push('is-variance');
+        if (row._type === 'variance')      cls.push('is-variance');
         return cls.join(' ');
       };
 
       const btnStyle = (active) => ({
-        padding: '6px 14px', fontSize: 13, fontWeight: 600,
+        padding: '5px 14px', fontSize: 13, fontWeight: 600,
         border: '1px solid var(--color-base-border, #d9dade)',
         borderRadius: 6, cursor: 'pointer', fontFamily: 'inherit',
         background: active ? 'var(--color-base-primary, #0069b4)' : '#fff',
         color: active ? '#fff' : 'var(--color-base-foreground, #1f1f21)',
+        transition: 'background 0.15s',
       });
+
+      const totalWidth = columns.reduce((s, c) => s + (typeof c.width === 'number' ? c.width : parseInt(c.width) || 120), 0);
 
       return (
         <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f7f8f8' }}>
-          <div style={{ padding: 32, paddingBottom: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-              <div>
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', margin: '0 0 4px' }}>Timesheet — Reconciliation</h2>
-                <p style={{ fontSize: 13, color: '#6b7280', margin: 0 }}>
-                  5 rows per assignee (SP · Invoice · CSV · Assignment % · Variance) · ref: Figma node 40000024:2381
-                </p>
-              </div>
-              <div style={{ display: 'flex', gap: 4 }}>
-                <button style={btnStyle(viewMode === 'week')}  onClick={() => setViewMode('week')}>Week</button>
-                <button style={btnStyle(viewMode === 'month')} onClick={() => setViewMode('month')}>Month</button>
-              </div>
+          <div style={{ padding: '28px 32px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: '0 0 3px' }}>
+                Timesheet — Reconciliation
+              </h2>
+              <p style={{ fontSize: 12, color: '#9ca3af', margin: 0 }}>
+                SP · Invoice · Client CSV · Assignment % · Variance — ref: Figma node 141:39046
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button style={btnStyle(viewMode === 'week')}  onClick={() => setViewMode('week')}>Week</button>
+              <button style={btnStyle(viewMode === 'month')} onClick={() => setViewMode('month')}>Month</button>
             </div>
           </div>
-          <div style={{ background: '#fff', borderRadius: 8, border: '1px solid var(--color-base-border, #d9dade)', overflow: 'hidden', margin: '0 32px 32px' }}>
-            <TimesheetProjectHeader />
-            <Table columns={columns} data={rows} rowClassName={rowClassName} />
+
+          <div style={{ overflowX: 'auto', margin: '0 32px 32px' }}>
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue="project"
+              className="accordion--timesheets accordion--time-reports"
+              style={{ minWidth: totalWidth }}
+            >
+              <AccordionItem value="project">
+                <AccordionTrigger>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p className="accordion-project__title">Boston Global HCP Web Experience Jan</p>
+                    <p className="accordion-project__subtitle">Cloud and App Platforms and Engineering / Quality &amp; Performance Engineering</p>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Table
+                    columns={columns}
+                    data={rows}
+                    rowClassName={rowClassName}
+                    wrapperClassName="table-wrapper--seamless table-wrapper--recon"
+                    style={{ width: totalWidth }}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
       );
@@ -1132,5 +1122,530 @@ export const SRPAccountOverview = {
         />
       </div>
     );
+  },
+};
+
+// ─── SRP Dashboard Widget ─────────────────────────────────────────────────────
+// Ref: Figma node 183:7496
+// Card with header (company name + toggle + settings button) and two-panel body:
+//   Left  → Account Overview quarterly table (sticky scenario column)
+//   Right → Tabs (Headcount | Revenue) + monthly table (sticky scenario column)
+
+export const SRPDashboardWidget = {
+  name: 'SRP / Dashboard Widget',
+  render: () => {
+    function WidgetStory() {
+      const [activeTab, setActiveTab]        = useState('headcount');
+      const [includeUnmapped, setUnmapped] = useState(true);
+
+      // ── Inline SVG icons (Lucide) ──────────────────────────────────────────
+      const InfoIcon = () => (
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+          style={{ flexShrink: 0, color: 'var(--color-base-muted-foreground,#91959f)' }}>
+          <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.25"/>
+          <path d="M8 7v4" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/>
+          <circle cx="8" cy="5" r="0.75" fill="currentColor"/>
+        </svg>
+      );
+
+      // Lucide settings icon — https://lucide.dev/icons/settings
+      const SettingsIcon = () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true" style={{ flexShrink: 0 }}>
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      );
+
+      // ── Column builders ────────────────────────────────────────────────────
+
+      // Account Overview quarterly — scenario column sticky left
+      const aoColumns = [
+        {
+          key: 'scenario', label: '', width: 120, sticky: 'left',
+          render: (val) => <ScenarioLabel scenario={val} />,
+        },
+        ...QUARTERS_AO.map((q) => ({
+          key: q, label: q, align: 'right',
+          render: (val, row) =>
+            row.scenario === 'target'
+              ? <span style={{ fontSize: 13, fontWeight: 500 }}>{val}</span>
+              : (
+                <span style={{ fontSize: 13 }}>
+                  {val.amount}{' '}
+                  <span style={{ color: 'var(--color-base-muted-foreground,#91959f)', fontWeight: 600, fontSize: 12 }}>
+                    {val.pct}
+                  </span>
+                </span>
+              ),
+        })),
+      ];
+
+      // Headcount monthly — scenario column sticky left
+      const headcountColumns = [
+        {
+          key: 'scenario', label: '', width: 120, sticky: 'left',
+          render: (val) => <ScenarioLabel scenario={val} />,
+        },
+        ...MONTHS.map((m) => ({
+          key: m, label: m, align: 'right',
+          render: (val) => <span style={{ fontSize: 13 }}>{val}</span>,
+        })),
+      ];
+
+      // Revenue monthly — scenario column sticky left
+      const revenueColumns = [
+        {
+          key: 'scenario', label: '', width: 120, sticky: 'left',
+          render: (val) => <ScenarioLabel scenario={val} />,
+        },
+        ...MONTHS.map((month) => {
+          const isVarianceMonth = REVENUE_DATA.some(r => r.variance?.month === month);
+          return {
+            key: month, label: month, align: 'right',
+            className: isVarianceMonth ? 'table__td--variance' : '',
+            render: (val, row) => {
+              const hasVariance = row.variance?.month === month;
+              if (hasVariance) {
+                return (
+                  <VarianceBadgeCell
+                    badge={row.variance.label}
+                    value={val === 0 ? '$0.00' : val}
+                    muted={val === 0}
+                  />
+                );
+              }
+              return <span style={{ fontSize: 13 }}>{val}</span>;
+            },
+          };
+        }),
+      ];
+
+      // ── Styles ────────────────────────────────────────────────────────────
+      const cardStyle = {
+        background: '#ffffff',
+        borderRadius: 10,
+        border: '1px solid rgba(0,0,0,0.08)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        overflow: 'hidden',
+        fontFamily: 'system-ui, sans-serif',
+      };
+
+      const headerStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '12px 20px',
+        background: '#ffffff',
+        borderBottom: '1px solid rgba(0,0,0,0.07)',
+        gap: 16,
+      };
+
+      const bodyStyle = {
+        display: 'flex',
+        alignItems: 'flex-end',
+        padding: '12px 16px 16px',
+        gap: 12,
+        background: 'var(--color-base-card, #ffffff)',
+        overflowX: 'auto',
+      };
+
+      const panelStyle = {
+        background: '#ffffff',
+        borderRadius: 6,
+        border: '1px solid rgba(0,0,0,0.07)',
+        overflow: 'hidden',
+        flexShrink: 0,
+      };
+
+      const settingsBtnStyle = {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '6px 12px',
+        borderRadius: 6,
+        border: '1px solid rgba(0,0,0,0.14)',
+        background: '#ffffff',
+        color: '#374151',
+        fontSize: 13,
+        fontWeight: 500,
+        lineHeight: '20px',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+      };
+
+      return (
+        <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif', background: '#eef0f2' }}>
+          <div style={cardStyle}>
+
+            {/* ── Header ── */}
+            <div style={headerStyle}>
+              {/* Left: title + info icon + toggle */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: '#1f1f21', whiteSpace: 'nowrap' }}>
+                    Boston Scientific International SA
+                  </span>
+                  <InfoIcon />
+                </div>
+                <Toggle
+                  checked={includeUnmapped}
+                  onChange={setUnmapped}
+                  labelRight="Include unmapped position"
+                />
+              </div>
+              {/* Right: Account Settings with Lucide settings icon */}
+              <button style={settingsBtnStyle} type="button">
+                <SettingsIcon />
+                Account Settings
+              </button>
+            </div>
+
+            {/* ── Body ── */}
+            <div style={bodyStyle}>
+
+              {/* Left panel — Account Overview quarterly */}
+              <div style={panelStyle}>
+                <Table
+                  columns={aoColumns}
+                  data={ACCOUNT_OVERVIEW_DATA}
+                  wrapperClassName="table-wrapper--seamless"
+                />
+              </div>
+
+              {/* Right panel — Headcount / Revenue monthly */}
+              <div style={{ ...panelStyle, flex: 1, minWidth: 0 }}>
+                {/* Tabs — Headcount | Revenue */}
+                <div style={{
+                  padding: '8px 12px',
+                  borderBottom: '1px solid rgba(0,0,0,0.07)',
+                }}>
+                  <Tabs
+                    tabs={[
+                      { id: 'headcount', label: 'Headcount' },
+                      { id: 'revenue',   label: 'Revenue'   },
+                    ]}
+                    active={activeTab}
+                    onChange={setActiveTab}
+                    size="sm"
+                  />
+                </div>
+                {/* Scrollable monthly table — scenario col sticky left */}
+                {activeTab === 'headcount'
+                  ? <Table columns={headcountColumns} data={HEADCOUNT_DATA} wrapperClassName="table-wrapper--seamless" />
+                  : <Table columns={revenueColumns}   data={REVENUE_DATA}   wrapperClassName="table-wrapper--seamless" />
+                }
+              </div>
+
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return <WidgetStory />;
+  },
+};
+
+// ─── Time Reports ─────────────────────────────────────────────────────────────
+// Columns: ASSIGNEE · RATE · INV. · ASSIGNMENT (sticky left)
+//          [Feb 1…Feb 28] (month) | [Q1…Q4] (quarter)  — scrollable
+//          HOURS · REVENUE  (sticky right)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const TR_QUARTER_COLS = ['Q1', 'Q2', 'Q3', 'Q4'];
+
+// Reuse _FEB_WE / _febH already declared above in the RECON section
+const TR_ASSIGNEES = [
+  {
+    id: 1, name: 'David Rayan',  role: 'Senior Frontend Engineer',
+    rate: '$90/hr', invoice: 'INV-001', billable: true,
+    dayHours: _febH({ 'Feb 5': 0, 'Feb 12': 6, 'Feb 26': 4 }),
+    quarterly: { Q1: 480, Q2: 456, Q3: 480, Q4: 464 },
+    totalHours: '160h', totalRevenue: '$14,400',
+  },
+  {
+    id: 2, name: 'Sofia Reyes',  role: 'Product Designer',
+    rate: '$85/hr', invoice: 'INV-002', billable: true,
+    dayHours: _febH({ 'Feb 3': 0, 'Feb 17': 0 }),
+    quarterly: { Q1: 432, Q2: 440, Q3: 448, Q4: 440 },
+    totalHours: '144h', totalRevenue: '$12,240',
+  },
+  {
+    id: 3, name: 'James Carter', role: 'Backend Engineer',
+    rate: '$110/hr', invoice: 'INV-003', billable: false,
+    dayHours: _febH(),
+    quarterly: { Q1: 480, Q2: 480, Q3: 480, Q4: 480 },
+    totalHours: '160h', totalRevenue: '$17,600',
+  },
+  {
+    id: 4, name: 'Elena Morris', role: 'Frontend Developer',
+    rate: '$85/hr', invoice: 'INV-004', billable: true,
+    dayHours: _febH({ 'Feb 4': 0, 'Feb 13': 4 }),
+    quarterly: { Q1: 456, Q2: 448, Q3: 464, Q4: 448 },
+    totalHours: '152h', totalRevenue: '$12,920',
+  },
+  {
+    id: 5, name: 'Marcus Webb',  role: 'QA Engineer',
+    rate: '$75/hr', invoice: 'INV-005', billable: false,
+    dayHours: _febH({ 'Feb 6': 0, 'Feb 20': 0, 'Feb 27': 6 }),
+    quarterly: { Q1: 360, Q2: 376, Q3: 360, Q4: 384 },
+    totalHours: '120h', totalRevenue: '$9,000',
+  },
+  {
+    id: 6, name: 'Priya Nair',   role: 'DevOps Engineer',
+    rate: '$95/hr', invoice: 'INV-006', billable: true,
+    dayHours: _febH({ 'Feb 10': 6, 'Feb 18': 6 }),
+    quarterly: { Q1: 504, Q2: 488, Q3: 496, Q4: 504 },
+    totalHours: '168h', totalRevenue: '$15,960',
+  },
+];
+
+// TimeReportsHeader replaced by Accordion (accordion--timesheets variant)
+
+// Day cell for month view — null=weekend, 0=no-hours (red dashed), n=green pill
+function TRHoursCell({ hours }) {
+  if (hours === null) {
+    return <span style={{ color: 'var(--color-base-border, #d9dade)', fontSize: 12, userSelect: 'none' }}>—</span>;
+  }
+  if (hours === 0) {
+    return (
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        minWidth: 26, height: 20, borderRadius: 4,
+        border: '1.5px dashed var(--color-base-destructive, #dc2626)',
+        color: 'var(--color-base-destructive, #dc2626)',
+        fontSize: 11, fontWeight: 700, lineHeight: 1,
+      }}>0</span>
+    );
+  }
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      minWidth: 26, height: 20, borderRadius: 4,
+      background: 'var(--color-status-success-background, #dcfce7)',
+      color: 'var(--color-status-success-foreground, #16a34a)',
+      fontSize: 11, fontWeight: 700, lineHeight: 1,
+    }}>{hours}</span>
+  );
+}
+
+// Quarter cell — plain hours number with a subtle tint
+function TRQuarterCell({ hours }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      minWidth: 44, height: 26, borderRadius: 5,
+      background: 'var(--color-base-muted, #f7f8f8)',
+      color: 'var(--color-base-foreground, #1f1f21)',
+      fontSize: 12, fontWeight: 600, lineHeight: 1,
+    }}>{hours}h</span>
+  );
+}
+
+// Billable badge — verified (light blue) | not-billable — secondary (gray)
+function AssignmentBadge({ billable }) {
+  return billable
+    ? <Badge variant="verified">Billable</Badge>
+    : <Badge variant="secondary">Not Billable</Badge>;
+}
+
+// Shared sticky-left columns for both Time Reports variants
+function buildTRStickyLeft() {
+  return [
+    {
+      key: 'assignee', label: 'Assignee', sticky: 'left', width: 200,
+      render: (_, row) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <Avatar size="8" initials={row.name.split(' ').map(n => n[0]).join('')} />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--color-base-foreground, #1f1f21)', lineHeight: 1.35, whiteSpace: 'nowrap' }}>
+              {row.name}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--color-base-muted-foreground, #91959f)', lineHeight: 1.35, whiteSpace: 'nowrap' }}>
+              {row.role}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'rate', label: 'Rate', sticky: 'left', width: 70,
+      render: (_, row) => (
+        <span style={{ fontSize: 12, color: 'var(--color-base-muted-foreground, #91959f)', whiteSpace: 'nowrap' }}>
+          {row.rate}
+        </span>
+      ),
+    },
+    {
+      key: 'invoice', label: 'Inv.', sticky: 'left', width: 90,
+      render: (_, row) => (
+        <span style={{ fontSize: 12, color: 'var(--color-base-muted-foreground, #91959f)', whiteSpace: 'nowrap' }}>
+          {row.invoice}
+        </span>
+      ),
+    },
+    {
+      key: 'assignment', label: 'Assignment', sticky: 'left', width: 130,
+      render: (_, row) => <AssignmentBadge billable={row.billable} />,
+    },
+  ];
+}
+
+// Shared sticky-right columns for both Time Reports variants
+function buildTRStickyRight() {
+  return [
+    {
+      key: 'totalHours', label: 'Hours', align: 'right', sticky: 'right', width: 80,
+      render: (_, row) => (
+        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-base-foreground, #1f1f21)' }}>
+          {row.totalHours}
+        </span>
+      ),
+    },
+    {
+      key: 'totalRevenue', label: 'Revenue', align: 'right', sticky: 'right', width: 100,
+      render: (_, row) => (
+        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-base-foreground, #1f1f21)' }}>
+          {row.totalRevenue}
+        </span>
+      ),
+    },
+  ];
+}
+
+// ─── Time Reports — Month ────────────────────────────────────────────────────
+
+export const TimeReportsMonth = {
+  name: 'Time Reports — Month',
+  render: () => {
+    function Story() {
+      const periods = RECON_MONTH_DAYS; // ['Feb 1' … 'Feb 28']
+
+      const columns = [
+        ...buildTRStickyLeft(),
+        ...periods.map((day) => ({
+          key: day, label: day, align: 'center', width: 52,
+          render: (_, row) => <TRHoursCell hours={row.dayHours[day]} />,
+        })),
+        ...buildTRStickyRight(),
+      ];
+
+      const totalWidth = columns.reduce(
+        (s, c) => s + (typeof c.width === 'number' ? c.width : parseInt(c.width) || 120), 0,
+      );
+
+      return (
+        <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f7f8f8' }}>
+          <div style={{ padding: '28px 32px 16px' }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: '0 0 3px' }}>
+              Time Reports — Month
+            </h2>
+            <p style={{ fontSize: 12, color: '#9ca3af', margin: 0 }}>
+              Daily hours per assignee for February · sticky ASSIGNEE / RATE / INV. / ASSIGNMENT + HOURS / REVENUE
+            </p>
+          </div>
+
+          <div style={{ overflowX: 'auto', margin: '0 32px 32px' }}>
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue="project"
+              className="accordion--timesheets accordion--time-reports"
+              style={{ minWidth: totalWidth }}
+            >
+              <AccordionItem value="project">
+                <AccordionTrigger>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p className="accordion-project__title">Boston Global HCP Web Experience — February 2025</p>
+                    <p className="accordion-project__subtitle">Cloud and App Platforms and Engineering / Quality &amp; Performance Engineering</p>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Table
+                    columns={columns}
+                    data={TR_ASSIGNEES}
+                    wrapperClassName="table-wrapper--seamless table-wrapper--recon table-wrapper--time-reports"
+                    style={{ width: totalWidth }}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+      );
+    }
+    return <Story />;
+  },
+};
+
+// ─── Time Reports — Quarter ───────────────────────────────────────────────────
+
+export const TimeReportsQuarter = {
+  name: 'Time Reports — Quarter',
+  render: () => {
+    function Story() {
+      const columns = [
+        ...buildTRStickyLeft(),
+        ...TR_QUARTER_COLS.map((q) => ({
+          key: q, label: q, align: 'center', width: 120,
+          render: (_, row) => (
+            <TimesheetCell
+              state="approved"
+              value={String(row.quarterly[q])}
+              style={{ width: 52, height: 28, fontSize: 12, borderRadius: 5 }}
+            />
+          ),
+        })),
+        ...buildTRStickyRight(),
+      ];
+
+      const totalWidth = columns.reduce(
+        (s, c) => s + (typeof c.width === 'number' ? c.width : parseInt(c.width) || 120), 0,
+      );
+
+      return (
+        <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f7f8f8' }}>
+          <div style={{ padding: '28px 32px 16px' }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: '0 0 3px' }}>
+              Time Reports — Quarter
+            </h2>
+            <p style={{ fontSize: 12, color: '#9ca3af', margin: 0 }}>
+              Aggregated hours per quarter per assignee · sticky ASSIGNEE / RATE / INV. / ASSIGNMENT + HOURS / REVENUE
+            </p>
+          </div>
+
+          <div style={{ overflowX: 'auto', margin: '0 32px 32px' }}>
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue="project"
+              className="accordion--timesheets accordion--time-reports"
+              style={{ minWidth: totalWidth }}
+            >
+              <AccordionItem value="project">
+                <AccordionTrigger>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p className="accordion-project__title">Boston Global HCP Web Experience — FY 2025</p>
+                    <p className="accordion-project__subtitle">Cloud and App Platforms and Engineering / Quality &amp; Performance Engineering</p>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Table
+                    columns={columns}
+                    data={TR_ASSIGNEES}
+                    wrapperClassName="table-wrapper--seamless table-wrapper--recon table-wrapper--time-reports"
+                    style={{ width: totalWidth }}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+      );
+    }
+    return <Story />;
   },
 };

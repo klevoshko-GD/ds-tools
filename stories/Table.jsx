@@ -27,6 +27,7 @@ export function Table({
   onRowSelect,
   footer,
   rowClassName,
+  wrapperClassName,
   ...props
 }) {
   const variantClass = variant === 'default' ? '' : `table--${variant}`;
@@ -88,7 +89,7 @@ export function Table({
   const stickyTdClass = (col) => col.sticky ? `table__td--sticky-${col.sticky}` : '';
 
   return (
-    <div className="table-wrapper">
+    <div className={['table-wrapper', wrapperClassName].filter(Boolean).join(' ')}>
       <table className={['table', variantClass].filter(Boolean).join(' ')} {...props}>
         {caption && <caption style={{ display: 'none' }}>{caption}</caption>}
         <thead>
